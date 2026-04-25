@@ -38,12 +38,24 @@ function MainApp() {
   // State Routing: 'home', 'report', 'history', 'settings', 'auth'
   const [viewState, setViewState] = useState(results ? 'report' : 'home');
 
-  // Load history when user changes
+  // Load history when user changes and CLAIM anonymous reports
   useEffect(() => {
     if (user) {
       try {
-        const saved = localStorage.getItem(`nexus_audit_history_${user.email}`);
-        setHistory(saved ? JSON.parse(saved) : []);
+        const userKey = `nexus_audit_history_${user.email}`;
+        const saved = localStorage.getItem(userKey);
+        let userHistory = saved ? JSON.parse(saved) : [];
+
+        // CLAIM: If we have anonymous results, merge them into the user's history
+        if (results) {
+          const alreadyExists = userHistory.find(item => item.url === results.url);
+          if (!alreadyExists) {
+            userHistory = [results, ...userHistory];
+            localStorage.setItem(userKey, JSON.stringify(userHistory));
+          }
+        }
+
+        setHistory(userHistory);
       } catch (e) {
         setHistory([]);
       }
