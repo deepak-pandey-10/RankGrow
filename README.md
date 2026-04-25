@@ -1,121 +1,68 @@
-# AI SEO & AEO Analyzer
+# RankGrow – AI SEO Engine 🚀
 
-A full-stack web application that analyzes any website for **SEO** (Search Engine Optimization) and **AEO** (Answer Engine Optimization) performance.
+RankGrow is a high-performance, full-stack SaaS platform designed to perform comprehensive Search Engine Optimization (SEO) and Answer Engine Optimization (AEO) audits. It intelligently analyzes domains to identify structural gaps, grade website performance, and dynamically suggest actionable improvements to boost search visibility.
 
-## Tech Stack
+## 🌟 Key Features
 
-| Layer    | Technology                          |
-| -------- | ----------------------------------- |
-| Frontend | React + Vite + Tailwind CSS         |
-| Backend  | Node.js + Express                   |
-| HTTP     | Axios (client ↔ server)             |
-| Parsing  | Cheerio (server-side HTML analysis) |
+* **Real-time Domain Auditing:** Input any URL to instantly scrape, parse, and analyze meta-data and content structure.
+* **Secure Authentication System:** Built-in Register and Login flows utilizing salted hashing and JWT-based session tokens.
+* **Persistent History:** Your executed analytical reports are tracked securely so that historical scores can be accessed seamlessly across different sessions.
+* **Interactive Dashboard:** Beautifully crafted React frontend delivering results in a sleek, glassmorphic visual interface.
 
-## Project Structure
+---
 
-```
-SEO and AEO/
-├── client/                  # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Header.jsx          # App header with gradient title
-│   │   │   ├── UrlInput.jsx        # URL input form
-│   │   │   ├── ScoreCard.jsx       # Circular score display
-│   │   │   ├── ResultItem.jsx      # Individual check result
-│   │   │   ├── AnalysisResults.jsx # Full results container
-│   │   │   ├── LoadingState.jsx    # Skeleton loading UI
-│   │   │   └── ErrorMessage.jsx    # Error display
-│   │   ├── services/
-│   │   │   └── api.js              # Axios API calls
-│   │   ├── App.jsx                 # Root component
-│   │   └── index.css               # Tailwind + custom styles
-│   ├── index.html
-│   ├── vite.config.js
-│   └── package.json
-│
-├── server/                  # Express backend
-│   ├── routes/
-│   │   └── analyze.js              # POST /api/analyze endpoint
-│   ├── services/
-│   │   ├── seoAnalyzer.js          # SEO analysis (10 checks)
-│   │   └── aeoAnalyzer.js          # AEO analysis (9 checks)
-│   ├── utils/
-│   │   └── fetchPage.js            # URL fetcher with axios
-│   ├── index.js                    # Express entry point
-│   └── package.json
-│
-└── README.md
-```
+## 🛠️ Technology Stack
 
-## Getting Started
+**Frontend Architecture:**
+* **Framework:** React + Vite
+* **Routing / State:** React Context API
+* **Network Protocol:** Axios (configured with global auth interceptors and dynamic base URL detection)
 
-### 1. Start the backend
+**Backend Architecture:**
+* **Serverless Node:** Express 5 Framework (`express.json()` native payload parsing)
+* **Authentication:** `jsonwebtoken` (JWT) for secure validation + `bcryptjs` for strict password encryption.
+* **Database & ORM:** PostgreSQL bound seamlessly via Prisma 6.
 
+---
+
+## ⚙️ Getting Started (Local Development)
+
+Both the frontend client and the backend server must be running concurrently for the application to function. Follow these exact steps to spin up the application on your local machine:
+
+### 1. Database Configuration
+You must have a PostgreSQL database system running locally on the default port `5432`.
+Create a database named `RankGrow`.
+
+Navigate into the `server` directory and manually create a `.env` file to map your configuration:
 ```bash
 cd server
+touch .env
+```
+Update the `DATABASE_URL` inside your newly created `.env` file to match your Postgres credentials: `postgresql://<USERNAME>:<PASSWORD>@localhost:5432/RankGrow?schema=public`
+
+Push the structural schemas into your active database:
+```bash
+npx prisma db push
+```
+
+### 2. Booting the Backend
+Ensure you are still inside the `/server` directory, install all Node requirements, and launch exactly on Port 5000:
+```bash
+npm install
 node index.js
 ```
+*The server will boot and listen natively on `http://localhost:5000`.*
 
-Server runs on `http://localhost:5000`.
-
-### 2. Start the frontend
-
+### 3. Booting the Frontend
+Open a **new, separate terminal window**, navigate into your `/client` directory, and launch the Vite development environment:
 ```bash
 cd client
+npm install
 npm run dev
 ```
+*The React UI will launch and become actively available at `http://localhost:3000`.*
 
-Client runs on `http://localhost:3000` with API proxy to the backend.
+---
 
-### 3. Use the app
-
-1. Open `http://localhost:3000` in your browser
-2. Enter a website URL (e.g., `github.com`)
-3. Click **Analyze** to see SEO & AEO scores
-
-## API Reference
-
-### `POST /api/analyze`
-
-**Request:**
-```json
-{ "url": "example.com" }
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "url": "https://example.com",
-  "overallScore": 72,
-  "seo": { "score": 85, "results": [...] },
-  "aeo": { "score": 59, "results": [...] },
-  "analysisTimeMs": 1234
-}
-```
-
-## What Gets Analyzed
-
-### SEO Checks (10)
-- Title tag length & presence
-- Meta description optimization
-- Heading hierarchy (H1, H2, H3)
-- Image alt attributes
-- Internal & external links
-- Canonical URL
-- Viewport meta tag
-- Language attribute
-- Open Graph tags
-- Content word count
-
-### AEO Checks (9)
-- JSON-LD structured data
-- FAQ schema / Q&A content
-- Featured snippet readiness
-- Lists & tables (structured content)
-- Semantic HTML elements
-- HowTo schema detection
-- Voice search / Speakable specification
-- Topic focus & entity clarity
-- Direct answer definitions
-# RankGrow
+## 🔒 Security Posture & Environment Secrets
+Never commit `.env` files. Both application clusters (`client/` and `server/`) feature stringent `.gitignore` implementations explicitly shielding configuration secrets from leaking into your GitHub index. When deploying to production environments (such as Vercel, Render, or AWS), make sure to manually setup environment variables in your hosting provider's dashboard.
