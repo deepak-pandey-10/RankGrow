@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+@theme {
+  /* Neon Violet Primary */
+  --color-primary-50: #4c1d95; /* Inherit dark logic: lower numbers are darker for backgrounds */
+  --color-primary-100: #5b21b6;
+  --color-primary-200: #6d28d9;
+  --color-primary-300: #7c3aed;
+  --color-primary-400: #8b5cf6;
+  --color-primary-500: #a78bfa; /* Base bright accent */
+  --color-primary-600: #c4b5fd;
+  --color-primary-700: #ddd6fe;
+  --color-primary-800: #ede9fe;
+  --color-primary-900: #f5f3ff;
+
+  /* Inverted Zinc Palette for Dark Mode */
+  --color-surface-50: #000000;    /* Pure Black (TopNav, Inputs) */
+  --color-surface-100: #09090b;   /* Background Body (Zinc 950) */
+  --color-surface-200: #27272a;   /* Borders (Zinc 800) */
+  --color-surface-300: #3f3f46;   /* Heavier borders */
+  --color-surface-400: #52525b;   /* Muted icons */
+  --color-surface-500: #71717a;   /* Helper text */
+  --color-surface-600: #a1a1aa;   /* Subtext (Zinc 400) */
+  --color-surface-700: #e4e4e7;   /* Bright subtext */
+  --color-surface-800: #f4f4f5;   /* Not used much */
+  --color-surface-900: #ffffff;   /* Main Text / Headings (White) */
+  
+  --color-success: #10b981; /* Emerald */
+  --color-warning: #f59e0b; /* Amber */
+  --color-danger: #ef4444; /* Red */
+  --color-info: #3b82f6; /* Blue */
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* ─── Base Overrides ───────────────────────────────────────── */
+body {
+  background-color: var(--color-surface-100);
+  color: var(--color-surface-900);
+  @apply font-sans m-0 p-0;
+  overflow-x: hidden;
+  
+  /* Subtle dark mode gradient glow */
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.05), transparent 50%),
+    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.02), transparent 25%);
+}
+
+/* ─── Linear-style Hard Card ─────────────────────── */
+.saas-card {
+  background: #09090b; /* Match body for seamless look or slightly elevated */
+  border: 1px solid var(--color-surface-200);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px -4px rgba(0,0,0,0.5);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.saas-card:hover {
+  border-color: var(--color-surface-300);
+}
+
+.saas-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary-400);
+  box-shadow: 0 10px 25px -3px rgba(139, 92, 246, 0.15);
+}
+
+/* Specific background overrides for dark mode since cards are dark */
+.bg-white { background-color: #000000 !important; }
+.bg-red-50 { background-color: rgba(239, 68, 68, 0.05) !important; }
+.bg-amber-50 { background-color: rgba(245, 158, 11, 0.05) !important; }
+.bg-emerald-50 { background-color: rgba(16, 185, 129, 0.05) !important; }
+.border-red-200 { border-color: rgba(239, 68, 68, 0.2) !important; }
+.border-amber-200 { border-color: rgba(245, 158, 11, 0.2) !important; }
+.border-emerald-200 { border-color: rgba(16, 185, 129, 0.2) !important; }
+.bg-surface-50 { background-color: var(--color-surface-50) !important; }
+
+/* ─── Refined Buttons ───────────────────────────────────────── */
+.btn-primary {
+  @apply relative px-6 py-2.5 rounded-lg font-medium text-[14px] flex items-center justify-center gap-2;
+  background: var(--color-primary-200); /* Deep Violet */
+  color: #ffffff;
+  border: 1px solid var(--color-primary-300);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-300);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  background: var(--color-surface-200);
+  color: var(--color-surface-500);
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── Empty state overrides ─── */
+.bg-primary-50 { background-color: var(--color-primary-50) !important; }
+.text-primary-600 { color: var(--color-primary-600) !important; }
+
+/* ─── Clean Progress Bars ──────────────────────────────────── */
+.CircularProgressbar .CircularProgressbar-path {
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease 0s;
+}
+.CircularProgressbar .CircularProgressbar-trail {
+  stroke: var(--color-surface-200);
+}
+.CircularProgressbar .CircularProgressbar-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  fill: #ffffff;
+}
+
+/* ─── Shimmer Loader ───────────────────────────────────────── */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  @apply bg-surface-200 rounded relative overflow-hidden;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+/* ─── Animations ───────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-300);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-400);
+}
