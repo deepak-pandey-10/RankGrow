@@ -104,10 +104,11 @@ function MainApp() {
         return updated;
       });
     } catch (err) {
+      console.error("Analysis Request Failed:", err);
       const message =
         err.response?.data?.error ||
         err.response?.data?.details ||
-        "Could not reach the server. Ensure the backend is active.";
+        (err.message === 'Network Error' ? "Could not reach the server. Ensure the backend is active." : `Client Error: ${err.message}`);
       setError(message);
     } finally {
       setIsLoading(false);
