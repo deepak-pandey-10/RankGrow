@@ -7,9 +7,15 @@ const USERS_FILE = path.join(__dirname, '../data/users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'nexus_auditor_super_secret_key_2026';
 
 function readUsers() {
-  if (!fs.existsSync(USERS_FILE)) return [];
-  const data = fs.readFileSync(USERS_FILE, 'utf8');
-  return data ? JSON.parse(data) : [];
+  try {
+    if (!fs.existsSync(USERS_FILE)) return [];
+    const data = fs.readFileSync(USERS_FILE, 'utf8');
+    if (!data || data.trim() === '') return [];
+    return JSON.parse(data);
+  } catch (err) {
+    console.error("Error reading users file:", err);
+    return [];
+  }
 }
 
 function writeUsers(users) {
@@ -34,7 +40,8 @@ exports.register = async (req, res) => {
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({ token, user: { email: newUser.email } });
   } catch (err) {
-    res.status(500).json({ error: "Server error during registration." });
+    console.error("Registration error:", err);
+    res.status(500).json({ error: "Server error during registration.", details: err.message });
   }
 };
 
@@ -53,6 +60,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     res.status(200).json({ token, user: { email: user.email } });
   } catch (err) {
-    res.status(500).json({ error: "Server error during login." });
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Server error during login.", details: err.message });
   }
 };

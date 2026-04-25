@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../services/api';
+
 
 const AuthContext = createContext();
 
@@ -21,14 +22,14 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await axios.post('/api/auth/login', { email, password });
+    const res = await apiClient.post('/auth/login', { email, password });
     localStorage.setItem('nexus_auth_token', res.data.token);
     localStorage.setItem('nexus_auth_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
   };
 
   const register = async (email, password) => {
-    const res = await axios.post('/api/auth/register', { email, password });
+    const res = await apiClient.post('/auth/register', { email, password });
     localStorage.setItem('nexus_auth_token', res.data.token);
     localStorage.setItem('nexus_auth_user', JSON.stringify(res.data.user));
     setUser(res.data.user);

@@ -23,6 +23,7 @@ export default function LoginPage({ onSuccess }) {
       }
       if (onSuccess) onSuccess();
     } catch (err) {
+      console.error("Auth Request Failed:", err);
       setError(err.response?.data?.error || 'Authentication failed. Please try again.');
     } finally {
       setLoading(false);

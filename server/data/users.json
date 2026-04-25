@@ -28,5 +28,10 @@
     "id": "1777129290028",
     "email": "neha@gmail.com",
     "password": "$2b$10$HeeK7qZHW7etxcrXM3slE.aMpe1K6fu13KSlzDBNd/euSRbVQ8IBq"
+  },
+  {
+    "id": "1777136523816",
+    "email": "testagent@example.com",
+    "password": "$2b$10$865TqrOh28l1BlEgUdZWfeR4MwxSY1GEQfL/bWnlTEC2Ch199IzXq"
   }
 ]
