@@ -1,41 +1,30 @@
-const fs = require('fs');
-const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
 
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'nexus_auditor_super_secret_key_2026';
 
-function readUsers() {
-  try {
-    if (!fs.existsSync(USERS_FILE)) return [];
-    const data = fs.readFileSync(USERS_FILE, 'utf8');
-    if (!data || data.trim() === '') return [];
-    return JSON.parse(data);
-  } catch (err) {
-    console.error("Error reading users file:", err);
-    return [];
-  }
-}
 
-function writeUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-}
 
 exports.register = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: "Email and password are required." });
 
-    const users = readUsers();
-    if (users.find(u => u.email === email)) {
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
       return res.status(400).json({ error: "User already exists with this email." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = { id: Date.now().toString(), email, password: hashedPassword };
-    users.push(newUser);
-    writeUsers(users);
+    
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      }
+    });
 
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({ token, user: { email: newUser.email } });
@@ -50,8 +39,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: "Email and password are required." });
 
-    const users = readUsers();
-    const user = users.find(u => u.email === email);
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(401).json({ error: "Invalid credentials." });
 
     const isMatch = await bcrypt.compare(password, user.password);
