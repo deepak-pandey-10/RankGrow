@@ -12,10 +12,28 @@ async function runTechnicalChecks(url) {
   const techData = { 
     https: false,
     performanceScore: null,
-    mobileFriendly: null // Often derived from performance in Lighthouse
+    mobileFriendly: null,
+    robotsTxt: false
   };
 
-  // 1. Check HTTPS
+  // 1. Check Robots.txt
+  try {
+    const baseUrl = new URL(url).origin;
+    const robotsRes = await axios.get(`${baseUrl}/robots.txt`, { timeout: 5000 });
+    if (robotsRes.status === 200) {
+      techData.robotsTxt = true;
+    }
+  } catch (err) {
+    issues.push({
+      type: "tech",
+      severity: "high",
+      impact: 20,
+      check: "robots_txt",
+      message: "No robots.txt file detected. This file is critical for instructing search crawlers on how to index your site.",
+    });
+  }
+
+  // 2. Check HTTPS
   if (url.startsWith("https://")) {
     techData.https = true;
   } else {

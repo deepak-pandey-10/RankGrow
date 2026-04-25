@@ -101,7 +101,16 @@ export default function ReportPage({ data }) {
                {filterByType(suggestions, "seo").length === 0 ? (
                  <div className="saas-card p-6 text-[14px] text-surface-500 bg-surface-50">No critical SEO adjustments needed.</div>
                ) : (
-                 filterByType(suggestions, "seo").map((sug, idx) => <SuggestionCard key={idx} suggestion={sug} />)
+                 <>
+                   {/* Lazy Loading Mini Health Indicator */}
+                   <div className="saas-card p-4 bg-surface-50 border-primary-500/10 mb-4 flex items-center justify-between">
+                      <span className="text-[13px] font-medium text-surface-600 italic">Universal Lazy Loading Policy</span>
+                      <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${seo.lazyLoading?.status === 'pass' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
+                        {seo.lazyLoading?.status === 'pass' ? 'ENFORCED' : 'PARTIAL'}
+                      </span>
+                   </div>
+                   {filterByType(suggestions, "seo").map((sug, idx) => <SuggestionCard key={idx} suggestion={sug} />)}
+                 </>
                )}
              </div>
            </div>
@@ -140,7 +149,15 @@ export default function ReportPage({ data }) {
                {filterByType(suggestions, "tech").length === 0 ? (
                  <div className="saas-card p-6 text-[14px] text-surface-500 bg-surface-50">Technical architecture passes standard core web vitals.</div>
                ) : (
-                 filterByType(suggestions, "tech").map((sug, idx) => <SuggestionCard key={idx} suggestion={sug} />)
+                 <>
+                   <div className="saas-card p-4 bg-surface-50 border-primary-500/10 mb-4 flex items-center justify-between">
+                      <span className="text-[13px] font-medium text-surface-600">Robots.txt Availability</span>
+                      <span className={`text-[12px] font-bold px-2 py-0.5 rounded ${tech.robotsTxt ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                        {tech.robotsTxt ? 'DETECTED' : 'MISSING'}
+                      </span>
+                   </div>
+                   {filterByType(suggestions, "tech").map((sug, idx) => <SuggestionCard key={idx} suggestion={sug} />)}
+                 </>
                )}
              </div>
            </div>

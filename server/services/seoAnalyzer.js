@@ -124,6 +124,26 @@ function runSeoChecks(html) {
     }
   });
 
+  // ── 5. Lazy Loading ────────────────────────────────────────
+  const missingLazy = [];
+  images.each((_, img) => {
+    const loading = $(img).attr("loading");
+    const src = $(img).attr("src") || "unknown";
+    if (loading !== "lazy") {
+      missingLazy.push(src);
+    }
+  });
+
+  if (totalImages > 0 && missingLazy.length > 0) {
+    issues.push({
+      type: "seo",
+      severity: "medium",
+      impact: 10,
+      check: "lazy_loading",
+      message: `${missingLazy.length} of ${totalImages} image(s) do not use lazy loading. Use loading="lazy" to improve performance.`,
+    });
+  }
+
   if (missingAlt.length > 0) {
     const percentage = missingAlt.length / totalImages;
     altStatus = percentage > 0.5 ? "fail" : "warning";
@@ -158,6 +178,11 @@ function runSeoChecks(html) {
         missingAlt: missingAlt.length,
         missingAltSources: missingAlt.slice(0, 10), // cap at 10
         status: altStatus,
+      },
+      lazyLoading: {
+        total: totalImages,
+        missing: missingLazy.length,
+        status: missingLazy.length > 0 ? "warning" : "pass",
       },
     },
     issues,
